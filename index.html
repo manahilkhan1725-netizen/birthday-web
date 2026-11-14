@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Birthday Cinema 🎬</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Canvas for Ambient Particles & Confetti -->
+  <canvas id="ambient-canvas"></canvas>
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Ambient Light Vignette -->
+  <div class="cinema-lighting"></div>
+
+  <!-- Audio Player -->
+  <audio id="bgm" loop preload="auto">
+    <source src="bgm.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Top Floating Controls -->
+  <header class="cinema-header">
+    <button id="customize-btn" class="header-icon-btn" title="Personalize Name & Details" aria-label="Personalize">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 20h9"></path>
+        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+      </svg>
+      <span>Edit</span>
+    </button>
+    <div class="cinema-logo">BIRTHDAY CINEMA 🎬</div>
+    <button id="sound-btn" class="header-icon-btn" title="Toggle Sound" aria-label="Sound Toggle">
+      <div class="sound-wave">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span id="sound-label">Music</span>
+    </button>
+  </header>
+
+  <!-- Main Mobile/Cinema Container -->
+  <main class="app-viewport">
+
+    <!-- ================= SCREEN 1: OPENING ================= -->
+    <section id="screen-opening" class="scene active">
+      <div class="scene-content opening-content">
+        <p class="eyebrow-tag">PRESENTING A SPECIAL STORY</p>
+        
+        <h1 class="opening-headline">
+          Tonight,<br>
+          <span class="gold-italic">one story</span><br>
+          deserves to be celebrated...
+        </h1>
+        
+        <div class="gold-divider"></div>
+        
+        <p class="opening-subtag">A STORY ABOUT YOU ❤️</p>
+        
+        <button class="gold-pill-btn play-movie-btn" onclick="goToScreen('ticket')">
+          <span class="play-icon">▶</span> PLAY THE MOVIE
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= SCREEN 2: TICKET ================= -->
+    <section id="screen-ticket" class="scene">
+      <div class="scene-content ticket-screen-content">
+        <p class="eyebrow-tag">SPECIAL PREMIERE</p>
+
+        <!-- Vintage Cinema Ticket -->
+        <div class="ticket-wrapper" id="ticket-card">
+          <div class="ticket-body">
+            
+            <!-- Left Ticket Stub -->
+            <div class="ticket-part ticket-left">
+              <span class="ticket-badge">SPECIAL PASS</span>
+              <h2 class="ticket-title">BIRTHDAY<br><span class="ticket-year">2026</span></h2>
+              <p class="ticket-admit">ADMIT ONE</p>
+              <h3 class="ticket-name recipient-name">[NAME]</h3>
+              <small class="ticket-footnote">ONE NIGHT ONLY</small>
+            </div>
+
+            <!-- Perforated Cutout Divider -->
+            <div class="ticket-perforation">
+              <div class="notch notch-top"></div>
+              <div class="perforation-line"></div>
+              <div class="notch notch-bottom"></div>
+            </div>
+
+            <!-- Right Ticket Stub -->
+            <div class="ticket-part ticket-right">
+              <div class="ticket-cake-icon">🎂</div>
+              <span class="ticket-code">BD-26</span>
+            </div>
+
+          </div>
+        </div>
+
+        <button class="gold-pill-btn tear-btn" id="tear-ticket-btn" onclick="tearTicket()">
+          TEAR THE TICKET ✂️
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= SCREEN 3: CHAPTER 01 ================= -->
+    <section id="screen-chapter1" class="scene">
+      <div class="scene-content chapter1-content">
+        <div class="chapter-indicator">CHAPTER 01</div>
+        
+        <div class="chapter1-grid">
+          <div class="chapter1-left">
+            <h1 class="chapter1-heading">
+              The<br>
+              Story<br>
+              <em>Begins...</em>
+            </h1>
+          </div>
+
+          <div class="chapter1-right">
+            <p class="chapter1-quote">
+              Every<br>
+              beautiful<br>
+              story<br>
+              begins<br>
+              with a<br>
+              single<br>
+              moment.
+            </p>
+            <button class="round-arrow-btn" onclick="goToScreen('chapter2')" title="Next Chapter" aria-label="Next Chapter">
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCREEN 4: CHAPTER 02 (MEMORY FILM) ================= -->
+    <section id="screen-chapter2" class="scene">
+      <div class="scene-content film-content">
+        <div class="chapter-indicator">CHAPTER 02</div>
+        <h2 class="scene-title">The Memory Film</h2>
+        <p class="scene-subtitle">Some moments deserve to play forever.</p>
+
+        <!-- 35mm Celluloid Film Reel Strip -->
+        <div class="film-reel-viewport">
+          <div class="film-track" id="filmTrack">
+            <!-- Film Frame 1 -->
+            <div class="film-frame active" data-index="0">
+              <div class="sprockets top"><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="frame-window">
+                <span class="frame-num">01</span>
+                <img src="photo1.jpg" alt="Memory 01" class="frame-img memory-img-0">
+              </div>
+              <div class="sprockets bottom"><span></span><span></span><span></span><span></span><span></span></div>
+            </div>
+
+            <!-- Film Frame 2 -->
+            <div class="film-frame" data-index="1">
+              <div class="sprockets top"><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="frame-window">
+                <span class="frame-num">02</span>
+                <img src="photo2.jpg" alt="Memory 02" class="frame-img memory-img-1">
+              </div>
+              <div class="sprockets bottom"><span></span><span></span><span></span><span></span><span></span></div>
+            </div>
+
+            <!-- Film Frame 3 -->
+            <div class="film-frame" data-index="2">
+              <div class="sprockets top"><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="frame-window">
+                <span class="frame-num">03</span>
+                <img src="photo3.jpg" alt="Memory 03" class="frame-img memory-img-2">
+              </div>
+              <div class="sprockets bottom"><span></span><span></span><span></span><span></span><span></span></div>
+            </div>
+
+            <!-- Film Frame 4 -->
+            <div class="film-frame" data-index="3">
+              <div class="sprockets top"><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="frame-window">
+                <span class="frame-num">04</span>
+                <img src="photo4.jpg" alt="Memory 04" class="frame-img memory-img-3">
+              </div>
+              <div class="sprockets bottom"><span></span><span></span><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carousel Pagination Controls -->
+        <div class="film-controls">
+          <button class="film-nav-btn prev" onclick="prevFilmSlide()">←</button>
+          <span class="film-counter" id="filmCounter">01 / 04</span>
+          <button class="film-nav-btn next" onclick="nextFilmSlide()">→</button>
+        </div>
+
+        <button class="gold-pill-btn" onclick="goToScreen('chapter3')">
+          CONTINUE →
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= SCREEN 5: CHAPTER 03 (WISHES GRID) ================= -->
+    <section id="screen-chapter3" class="scene">
+      <div class="scene-content wishes-content">
+        <div class="chapter-indicator">CHAPTER 03</div>
+        <h2 class="scene-title">Things I Wish For You</h2>
+
+        <div class="wishes-grid">
+          <div class="wish-card">
+            <span class="wish-num">01</span>
+            <h3 class="wish-title">Happiness</h3>
+            <p class="wish-desc">More reasons to smile every single day.</p>
+          </div>
+
+          <div class="wish-card">
+            <span class="wish-num">02</span>
+            <h3 class="wish-title">Dreams</h3>
+            <p class="wish-desc">May your biggest dreams find their way to you.</p>
+          </div>
+
+          <div class="wish-card">
+            <span class="wish-num">03</span>
+            <h3 class="wish-title">Adventure</h3>
+            <p class="wish-desc">New places, new experiences and beautiful stories.</p>
+          </div>
+
+          <div class="wish-card">
+            <span class="wish-num">04</span>
+            <h3 class="wish-title">Peace</h3>
+            <p class="wish-desc">A heart that feels calm, loved and content.</p>
+          </div>
+
+          <div class="wish-card">
+            <span class="wish-num">05</span>
+            <h3 class="wish-title">Beautiful Memories</h3>
+            <p class="wish-desc">Moments you'll remember and cherish for years to come.</p>
+          </div>
+
+          <div class="wish-card">
+            <span class="wish-num">06</span>
+            <h3 class="wish-title">Genuine Smiles</h3>
+            <p class="wish-desc">Because your genuine happiness truly matters.</p>
+          </div>
+        </div>
+
+        <button class="gold-pill-btn" onclick="goToScreen('letter')">
+          READ THE FINAL MESSAGE →
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= SCREEN 6: PRIVATE LETTER (ENVELOPE) ================= -->
+    <section id="screen-letter" class="scene">
+      <div class="scene-content letter-scene-content">
+        <p class="eyebrow-tag instruction-tap">TAP THE LETTER TO OPEN</p>
+
+        <!-- Animated Envelope Component -->
+        <div class="envelope-container" id="envelopeWrapper" onclick="toggleLetter()">
+          <div class="envelope">
+            <div class="envelope-back"></div>
+            
+            <!-- Sliding Parchment Letter -->
+            <div class="letter-sheet" id="letterSheet">
+              <div class="letter-header-tag">PRIVATE LETTER</div>
+              <h3 class="letter-to">To <span class="recipient-name">[NAME]</span></h3>
+              <p class="letter-body" id="customLetterText">
+                Today isn't just another day. It's a reminder of all the beautiful moments, smiles and memories that make life special. I hope this new chapter brings you boundless happiness, peace, endless laughter, and the fulfillment of every dream in your heart.
+              </p>
+              <div class="letter-sign">
+                <em>With lots of happiness,<br>Always</em> ❤️
+              </div>
+            </div>
+
+            <!-- Envelope Pockets & Flap -->
+            <div class="envelope-front"></div>
+            <div class="envelope-top-flap" id="envelopeFlap">
+              <div class="heart-seal">❤️</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="letter-action-bar" id="letterActionBar">
+          <button class="gold-pill-btn" onclick="startTrailer()">
+            WATCH THE TRAILER →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCREEN 7: THE BIRTHDAY TRAILER ================= -->
+    <section id="screen-trailer" class="scene">
+      <div class="scene-content trailer-content">
+        <p class="eyebrow-tag">THE BIRTHDAY TRAILER</p>
+        
+        <div class="trailer-word-display" id="trailerWordDisplay">
+          <span class="kinetic-word" id="kineticWord">SMILE.</span>
+        </div>
+
+        <p class="trailer-subcaption">Your story continues...</p>
+      </div>
+    </section>
+
+    <!-- ================= SCREEN 8: THE BIG REVEAL & CAKE ================= -->
+    <section id="screen-cake" class="scene">
+      <div class="scene-content cake-content">
+        <p class="eyebrow-tag">THE BIG REVEAL</p>
+        
+        <h1 class="reveal-birthday-title">HAPPY BIRTHDAY</h1>
+        <h2 class="reveal-birthday-name"><span class="recipient-name">[NAME]</span> 🎂</h2>
+
+        <!-- Interactive Animated Birthday Cake -->
+        <div class="cake-stage" id="cakeStage" onclick="blowCandles()">
+          <div class="cake-illustration">
+            <!-- Candles Layer -->
+            <div class="candles-row">
+              <div class="candle candle-1">
+                <div class="flame" id="flame1"></div>
+                <div class="candle-stick"></div>
+              </div>
+              <div class="candle candle-2">
+                <div class="flame" id="flame2"></div>
+                <div class="candle-stick"></div>
+              </div>
+              <div class="candle candle-3">
+                <div class="flame" id="flame3"></div>
+                <div class="candle-stick"></div>
+              </div>
+            </div>
+
+            <!-- Cake Tiers -->
+            <div class="cake-tier tier-top">
+              <div class="frosting-drips"></div>
+            </div>
+            <div class="cake-tier tier-middle">
+              <div class="middle-stripe"></div>
+            </div>
+            <div class="cake-tier tier-bottom"></div>
+            <div class="cake-plate"></div>
+          </div>
+        </div>
+
+        <p class="cake-instruction" id="cakeInstruction">Make a wish before the candles blow out... ✨</p>
+        
+        <div class="cake-actions">
+          <button class="gold-pill-btn" id="makeWishBtn" onclick="blowCandles()">
+            MAKE A WISH 🕯️
+          </button>
+          <button class="gold-pill-btn hidden" id="seeCreditsBtn" onclick="goToScreen('credits')">
+            SEE CREDITS 🎬
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCREEN 9: MOVIE END CREDITS ================= -->
+    <section id="screen-credits" class="scene">
+      <div class="scene-content credits-content">
+        <div class="credits-roll" id="creditsRoll">
+          <div class="credit-block">
+            <span class="credit-label">A SPECIAL DAY</span>
+            <span class="credit-sub">FOR A SPECIAL PERSON</span>
+          </div>
+
+          <div class="credit-block">
+            <span class="credit-label">STARRING</span>
+            <span class="credit-val highlight recipient-name">[NAME]</span>
+          </div>
+
+          <div class="credit-block">
+            <span class="credit-label">WRITTEN BY</span>
+            <span class="credit-val">Beautiful Memories</span>
+          </div>
+
+          <div class="credit-block">
+            <span class="credit-label">PRODUCED BY</span>
+            <span class="credit-val">Love & Happiness</span>
+          </div>
+
+          <div class="credit-block">
+            <span class="credit-label">MUSIC & VIBES</span>
+            <span class="credit-val">Laughter & Celebration</span>
+          </div>
+
+          <div class="credit-block">
+            <span class="credit-label">DIRECTED BY</span>
+            <span class="credit-val">You ❤️</span>
+          </div>
+
+          <div class="credit-divider-line"></div>
+
+          <div class="credit-the-end">
+            <h2>THE END...</h2>
+            <p>OR MAYBE A NEW BEGINNING ✨</p>
+          </div>
+
+          <div class="credit-action">
+            <button class="gold-pill-btn restart-btn" onclick="restartCinema()">
+              WATCH AGAIN ↺
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= PERSONALIZATION MODAL ================= -->
+  <div class="modal-overlay" id="customModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>✨ Customize Birthday Movie</h3>
+        <button class="close-modal-btn" onclick="closeCustomizeModal()">✕</button>
+      </div>
+
+      <div class="modal-form">
+        <label>
+          <span>Recipient Name</span>
+          <input type="text" id="inputName" placeholder="e.g. Sarah / Alex" value="Alex">
+        </label>
+
+        <label>
+          <span>Celebration Year / Age</span>
+          <input type="text" id="inputYear" placeholder="e.g. 2026 / 21st" value="2026">
+        </label>
+
+        <label>
+          <span>Personal Letter Message</span>
+          <textarea id="inputMessage" rows="3">Today isn't just another day. It's a reminder of all the beautiful moments, smiles and memories that make life special. I hope this new chapter brings you boundless happiness, peace, endless laughter, and the fulfillment of every dream in your heart.</textarea>
+        </label>
+
+        <label>
+          <span>Custom Photos (Upload 1-4 images)</span>
+          <input type="file" id="inputPhotos" accept="image/*" multiple>
+          <small class="hint">Upload your favorite memories to fill the film strip!</small>
+        </label>
+
+        <button class="gold-pill-btn save-custom-btn" onclick="saveCustomizations()">
+          APPLY & WATCH ✨
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
